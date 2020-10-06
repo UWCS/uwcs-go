@@ -75,6 +75,12 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+OAUTH_SERVER = "https://uwcs.co.uk/o/"
+DJANGO_ADMIN_SSO_AUTH_URI = OAUTH_SERVER+"authorize/"
+DJANGO_ADMIN_SSO_REVOKE_URI = OAUTH_SERVER+"revoke_token/"
+DJANGO_ADMIN_SSO_TOKEN_URI = OAUTH_SERVER+"token/"
+DJANGO_ADMIN_SSO_OAUTH_SCOPE = "lanapp"
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
