@@ -26,6 +26,8 @@ SECRET_KEY = '$qr02$p1*yza+@2h-53@(fw3r(o@m3%r)6zub&)i5o_th!236t'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+DEFAULT_DOMAIN = ""
+DEFAULT_PROTOCOL = "https://"
 
 
 # Application definition
