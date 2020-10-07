@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.sites.shortcuts import get_current_site
 
 # Create your models here.
 from django.urls import reverse, NoReverseMatch
