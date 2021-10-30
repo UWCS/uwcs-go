@@ -13,8 +13,11 @@ class DjangoSSOAuthBackend(object):
 
     def authenticate(self, request=None, **kwargs):
         username = kwargs.pop("username", None)
+        roles = kwargs.pop("roles", set())
+        staff = kwargs.pop("staff", False)
+        superuser = kwargs.pop("superuser", False)
 
-        assignment = Assignment.objects.for_username(username)
+        assignment = Assignment.objects.for_user_profile(username, roles, staff, superuser)
         if assignment is None:
             return None
 
