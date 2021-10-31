@@ -56,10 +56,12 @@ def end(request):
     print(credentials.__dict__)
 
     if credentials.access_token:
-        user_data = _complete_login(credentials.access_token)
-        print(user_data)
+        user_data, user_groups = _complete_login(credentials.access_token)
         user_id = user_data["user"]["username"]
-        user = authenticate(username=user_id)
+        roles = {i["name"] for i in user_groups["user"]["groups"]}
+        should_superuser = user_groups["user"]["is_superuser"]
+        should_staff = user_groups["user"]["is_staff"]
+        user = authenticate(username=user_id, roles=roles, superuser=should_superuser, staff=should_staff)
         if user and user.is_active:
             login(request, user)
             return HttpResponseRedirect(reverse("admin:index"))
@@ -69,10 +71,16 @@ def end(request):
 
 
 def _complete_login(access_token, **kwargs):
-    profile_url = 'https://uwcs.co.uk/api/me'
+    profile_url = settings.DJANGO_ADMIN_SSO_PROFILE_API
     headers = {
         'Authorization': 'Bearer {0}'.format(access_token),
         'Content-Type': 'application/json',
     }
     extra_data = requests.get(profile_url, headers=headers).json()
-    return extra_data
+    profile_url = settings.DJANGO_ADMIN_SSO_ROLES_API
+    headers = {
+        'Authorization': 'Bearer {0}'.format(access_token),
+        'Content-Type': 'application/json',
+    }
+    extra_data_plus = requests.get(profile_url, headers=headers).json()
+    return extra_data, extra_data_plus

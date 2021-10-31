@@ -82,7 +82,9 @@ OAUTH_SERVER = "https://uwcs.co.uk/o/"
 DJANGO_ADMIN_SSO_AUTH_URI = OAUTH_SERVER+"authorize/"
 DJANGO_ADMIN_SSO_REVOKE_URI = OAUTH_SERVER+"revoke_token/"
 DJANGO_ADMIN_SSO_TOKEN_URI = OAUTH_SERVER+"token/"
-DJANGO_ADMIN_SSO_OAUTH_SCOPE = "lanapp"
+DJANGO_ADMIN_SSO_PROFILE_API = "https://uwcs.co.uk/api/profile"
+DJANGO_ADMIN_SSO_ROLES_API = "https://uwcs.co.uk/api/profile/roles"
+DJANGO_ADMIN_SSO_OAUTH_SCOPE = "profile roles"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

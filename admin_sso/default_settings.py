@@ -3,12 +3,18 @@ from django.utils.translation import gettext_lazy as _
 
 
 ASSIGNMENT_ANY = 0
-ASSIGNMENT_MATCH = 1
-ASSIGNMENT_EXCEPT = 2
+ASSIGNMENT_MATCH_USERNAME = 1
+# ASSIGNMENT_EXCEPT = 2 -- Deprecated upon addition of groups and flag matching as logic becomes painful to reason about
+ASSIGNMENT_MATCH_GROUP = 3
+ASSIGNMENT_STAFF = 4
+ASSIGNMENT_SUPERUSER = 5
+
 ASSIGNMENT_CHOICES = (
     (ASSIGNMENT_ANY, _("any")),
-    (ASSIGNMENT_MATCH, _("matches")),
-    (ASSIGNMENT_EXCEPT, _("don't match")),
+    (ASSIGNMENT_MATCH_USERNAME, _("username matches")),
+    (ASSIGNMENT_MATCH_GROUP, _("has group")),
+    (ASSIGNMENT_STAFF, _("is staff")),
+    (ASSIGNMENT_SUPERUSER, _("is superuser")),
 )
 
 DJANGO_ADMIN_SSO_ADD_LOGIN_BUTTON = getattr(
@@ -32,6 +38,12 @@ DJANGO_ADMIN_SSO_AUTH_URI = getattr(
 )
 DJANGO_ADMIN_SSO_TOKEN_URI = getattr(
     settings, "DJANGO_ADMIN_SSO_TOKEN_URI", "https://accounts.google.com/o/oauth2/token"
+)
+DJANGO_ADMIN_SSO_PROFILE_API = getattr(
+    settings, "DJANGO_ADMIN_SSO_PROFILE_API", ""
+)
+DJANGO_ADMIN_SSO_ROLES_API = getattr(
+    settings, "DJANGO_ADMIN_SSO_ROLES_API", ""
 )
 DJANGO_ADMIN_SSO_REVOKE_URI = getattr(
     settings,

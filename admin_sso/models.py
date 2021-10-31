@@ -9,29 +9,45 @@ from admin_sso import settings
 
 
 class AssignmentManager(models.Manager):
-    def for_username(self, username):
+    def for_user_profile(self, username, roles, staff, superuser):
+        def _match_groups(asm):
+            for i in roles:
+                if fnmatch.fnmatch(i, asm.match):
+                    print(i, asm.match)
+                    return True
+            return False
+
         possible_assignments = self.all()
         used_assignment = None
         for assignment in possible_assignments:
-            if assignment.username_mode == settings.ASSIGNMENT_ANY:
+            if assignment.match_mode == settings.ASSIGNMENT_ANY:
                 used_assignment = assignment
                 break
-            elif assignment.username_mode == settings.ASSIGNMENT_MATCH:
-                if fnmatch.fnmatch(username, assignment.username):
+            elif assignment.match_mode == settings.ASSIGNMENT_MATCH_USERNAME:
+                if fnmatch.fnmatch(username, assignment.match):
                     used_assignment = assignment
                     break
-            elif assignment.username_mode == settings.ASSIGNMENT_EXCEPT:
-                if not fnmatch.fnmatch(username, assignment.username):
+            elif assignment.match_mode == settings.ASSIGNMENT_MATCH_GROUP:
+                if _match_groups(assignment):
                     used_assignment = assignment
                     break
+            elif assignment.match_mode == settings.ASSIGNMENT_STAFF:
+                if staff:
+                    used_assignment = assignment
+                    break
+            elif assignment.match_mode == settings.ASSIGNMENT_SUPERUSER:
+                if superuser:
+                    used_assignment = assignment
+                    break
+        print(used_assignment)
         if used_assignment is None:
             return None
         return used_assignment
 
 
 class Assignment(models.Model):
-    username_mode = models.IntegerField(choices=settings.ASSIGNMENT_CHOICES)
-    username = models.CharField(max_length=255, blank=True)
+    match_mode = models.IntegerField(choices=settings.ASSIGNMENT_CHOICES)
+    match = models.CharField(verbose_name="Match Pattern", max_length=255, blank=True)
     weight = models.PositiveIntegerField(default=0)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE
@@ -44,8 +60,8 @@ class Assignment(models.Model):
 
     def __str__(self):
         return "%s(%s)" % (
-            dict(settings.ASSIGNMENT_CHOICES)[self.username_mode],
-            self.username,
+            dict(settings.ASSIGNMENT_CHOICES)[self.match_mode],
+            self.match,
         )
 
     objects = AssignmentManager()
